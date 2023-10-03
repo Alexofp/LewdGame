@@ -1,0 +1,152 @@
+{
+  "initialActions": [
+    {
+      "job": "Main",
+      "type": "updateJob",
+      "action": "start"
+    }
+  ],
+  "finalActions": [],
+  "globalTriggers": [
+    {
+      "type": "componentState",
+      "action": "stats",
+      "actions": [
+        {
+          "type": "updateComponent",
+          "action": "setVolume",
+          "channel": "generic-1-a",
+          "rampTime": "1",
+          "percentVolume": "{trigger-p}*100/{trigger-pt}",
+          "parsedRampTime": 1
+        },
+        {
+          "type": "updateComponent",
+          "action": "setVolume",
+          "channel": "generic-1-b",
+          "rampTime": "1",
+          "percentVolume": "{trigger-l} * 100 / {trigger-lt}"
+        },
+        {
+          "type": "updateComponent",
+          "action": "setVolume",
+          "channel": "generic-1-c",
+          "rampTime": "1",
+          "percentVolume": "{trigger-s} * 100 / {trigger-sm}"
+        }
+      ],
+      "channel": "webhook-a",
+      "parsedAction": "stats"
+    },
+    {
+      "type": "componentState",
+      "action": "painstretch",
+      "actions": [
+        {
+          "type": "updateComponent",
+          "action": "setVolume",
+          "channel": "part-grip-expander-a",
+          "rampTime": "5",
+          "percentVolume": "100"
+        },
+        {
+          "type": "updateComponent",
+          "action": "setVolume",
+          "channel": "part-grip-expander-a",
+          "rampTime": "1",
+          "percentVolume": "0"
+        }
+      ],
+      "channel": "webhook-a",
+      "parsedAction": "painstretch",
+      "requiredExpression": "{trigger-bodypart} == \"vagina\""
+    },
+    {
+      "type": "componentState",
+      "action": "painstretch",
+      "actions": [
+        {
+          "type": "updateComponent",
+          "action": "setVolume",
+          "channel": "generic-1-a",
+          "rampTime": "5",
+          "percentVolume": "100"
+        },
+        {
+          "type": "updateComponent",
+          "action": "setVolume",
+          "channel": "generic-1-a",
+          "rampTime": "1",
+          "percentVolume": "0"
+        }
+      ],
+      "channel": "webhook-a",
+      "parsedAction": "painstretch",
+      "requiredExpression": "{trigger-bodypart}==\"anus\""
+    }
+  ],
+  "jobs": {
+    "Main": {
+      "steps": {
+        "START": {
+          "actions": [],
+          "triggers": []
+        }
+      }
+    },
+    "Reset Inf": {
+      "steps": {
+        "Reset": {
+          "actions": [],
+          "triggers": []
+        },
+        "START": {
+          "actions": [],
+          "triggers": []
+        }
+      }
+    }
+  },
+  "queues": [],
+  "channels": {
+    "webhook-a": {
+      "name": "WH",
+      "type": "webhook",
+      "outbound": false,
+      "hideWebhookInfo": false
+    },
+    "generic-1-a": {
+      "name": "Pain %",
+      "type": "generic-1"
+    },
+    "generic-1-b": {
+      "name": "Lust %",
+      "type": "generic-1"
+    },
+    "generic-1-c": {
+      "name": "Stamina %",
+      "type": "generic-1"
+    },
+    "part-grip-expander-a": {
+      "name": "Inflate Vagina",
+      "type": "part-grip-expander"
+    },
+    "part-grip-expander-b": {
+      "name": "Inflate Anus",
+      "type": "part-grip-expander"
+    }
+  },
+  "controls": [
+    {
+      "id": "p",
+      "type": "textarea"
+    }
+  ],
+  "controlPresets": [],
+  "media": {
+    "patterns": {},
+    "audio": {},
+    "voices": {}
+  },
+  "customFunctions": ""
+}

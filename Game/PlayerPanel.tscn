@@ -177,6 +177,8 @@ margin_top = -128.289
 margin_right = 280.291
 margin_bottom = -96.289
 
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
 [connection signal="gui_input" from="ViewportWrapper" to="." method="_on_ViewportWrapper_gui_input"]
 [connection signal="mouse_entered" from="ViewportWrapper/CustomViewportControl" to="." method="_on_ViewportContainer_mouse_entered"]
 [connection signal="mouse_exited" from="ViewportWrapper/CustomViewportControl" to="." method="_on_ViewportContainer_mouse_exited"]
