@@ -213,6 +213,7 @@ margin_left = -233.0
 margin_top = -59.0
 margin_right = 233.0
 margin_bottom = 59.0
+window_title = "Confirm..."
 dialog_autowrap = true
 
 [node name="ModBrowser" parent="." instance=ExtResource( 6 )]

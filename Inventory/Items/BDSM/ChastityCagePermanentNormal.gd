@@ -38,6 +38,7 @@ func isRestraint():
 func generateRestraintData():
 	restraintData = RestraintUnremovable.new()
 	restraintData.setLevel(calculateBestRestraintLevel())
+	restraintData.lockIt()
 
 func getForcedOnMessage(isPlayer = true):
 	if(isPlayer):

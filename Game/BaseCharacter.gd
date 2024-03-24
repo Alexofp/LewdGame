@@ -1804,30 +1804,94 @@ func getRestraintStrugglingMinigameResult():
 func processStruggleTurn(isActivelyStruggling = false):
 	var texts = []
 	var damage = 0.0
+	var lockDamage = 0.0
 	var addLust = 0
 	var addPain = 0
 	var addStamina = 0
 	
 	for item in getInventory().getEquppedRestraints():
 		var restraintData: RestraintData = item.getRestraintData()
-		var struggleData = restraintData.processStruggleTurn(self, isActivelyStruggling)
+		var struggleData = restraintData.processStruggleTurn(self, isActivelyStruggling).build()
 		
 		if(struggleData == null):
 			continue
 			
 		if(struggleData.has("damage")):
 			damage += struggleData["damage"]
+		if struggleData.has("lockDamage"):
+			lockDamage += struggleData["lockDamage"]
 		if(struggleData.has("lust")):
 			addLust += struggleData["lust"]
 		if(struggleData.has("pain")):
 			addPain += struggleData["pain"]
 		if(struggleData.has("stamina")):
 			addStamina += struggleData["stamina"]
-		if(struggleData.has("text")):
+		if(struggleData.has("text") && struggleData["text"] != ""):
 			texts.append(struggleData["text"])
 			#additionalStruggleText += struggleData["text"] + "\n\n"
 		
-	return {"damage": damage, "lust": addLust, "pain": addPain, "stamina": addStamina, "text": Util.join(texts, "\n\n")}
+	return {"damage": damage, "lockDamage": lockDamage, "lust": addLust, "pain": addPain, "stamina": addStamina, "text": Util.join(texts, "\n\n")}
+
+func processLockpickTurn(_isActive = true):
+	var texts = []
+	var damage = 0.0
+	var lockDamage = 0.0
+	var addLust = 0
+	var addPain = 0
+	var addStamina = 0
+	
+	for item in getInventory().getEquppedRestraints():
+		var restraintData: RestraintData = item.getRestraintData()
+		var result = restraintData.processLockpickTurn(self, _isActive)
+	
+		if result == null:
+			continue
+		
+		if result.has("damage"):
+			damage += result["damage"]
+		if result.has("lockDamage"):
+			lockDamage += result["lockDamage"]
+		if result.has("lust"):
+			addLust += result["lust"]
+		if result.has("pain"):
+			addPain += result["pain"]
+		if result.has("stamina"):
+			addStamina += result["stamina"]
+		if result.has("text"):
+			texts.append(result["text"])
+		
+	return {"damage": damage, "lockDamage": lockDamage, "lust": addLust, "pain": addPain, "stamina": addStamina, "text": Util.join(texts, "\n\n")}
+
+func processCutTurn(_isActive = true):
+	var texts = []
+	var damage = 0.0
+	var lockDamage = 0.0
+	var addLust = 0
+	var addPain = 0
+	var addStamina = 0
+	
+	for item in getInventory().getEquppedRestraints():
+		var restraintData: RestraintData = item.getRestraintData()
+		var result = restraintData.processCutTurn(self, _isActive)
+	
+		if result == null:
+			continue
+		
+		if result.has("damage"):
+			damage += result["damage"]
+		if result.has("lockDamage"):
+			lockDamage += result["lockDamage"]
+		if result.has("lust"):
+			addLust += result["lust"]
+		if result.has("pain"):
+			addPain += result["pain"]
+		if result.has("stamina"):
+			addStamina += result["stamina"]
+		if result.has("text"):
+			texts.append(result["text"])
+		
+	return {"damage": damage, "lockDamage": lockDamage, "lust": addLust, "pain": addPain, "stamina": addStamina, "text": Util.join(texts, "\n\n")}
+
 
 func getCustomAttribute(id):
 	return buffsHolder.getCustom(id)

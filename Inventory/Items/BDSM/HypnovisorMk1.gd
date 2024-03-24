@@ -46,12 +46,15 @@ func getTags():
 		return [ItemTag.BDSMRestraint, ItemTag.Hypnovisor, ItemTag.SoldByAlexRynard]
 	return [ItemTag.BDSMRestraint, ItemTag.Hypnovisor]
 
+func rarity():
+	return 10
+
 func isRestraint():
 	return true
 
 func generateRestraintData():
 	restraintData = RestraintHypnovisor.new()
-	restraintData.setLevel(5)
+	restraintData.setLevel(calculateBestRestraintLevel())
 	
 func getForcedOnMessage(isPlayer = true):
 	if(isPlayer):

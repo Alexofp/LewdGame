@@ -280,7 +280,9 @@ func _react(_action: String, _args):
 	if(_action == "getgagged"):
 		processTime(10 * 60)
 		
-		GM.pc.getInventory().equipItem(GlobalRegistry.createItem("basketmuzzle"))
+		var _item = GlobalRegistry.createItem("basketmuzzle")
+		_item.getRestraintData().lockIt()
+		GM.pc.getInventory().equipItem(_item)
 		addMessage("A basket cage muzzle was forced on you!")
 		
 	if(_action == "cuffs"):

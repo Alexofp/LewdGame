@@ -741,28 +741,6 @@ func getCellLocation():
 	
 	return "cellblock_orange_playercell"
 
-func calculateBestRestraintLevel():
-	var restraintsCount = 0
-	var levelsTotal = 0
-	for item in getInventory().getEquppedRestraints():
-		var restraintData: RestraintData = item.getRestraintData()
-		
-		if(!restraintData.canStruggle()):
-			continue
-		
-		restraintsCount += 1
-		levelsTotal += restraintData.getLevel()
-	
-	if(restraintsCount < 2 || RNG.chance(20)):
-		return RNG.randi_range(1, 5)
-	
-	var average = float(levelsTotal) / float(restraintsCount)
-
-	if(average >= 2.5):
-		return RNG.randi_range(1, 3)
-	else:
-		return RNG.randi_range(3, 5)
-
 func addIntoxication(howmuch: float):
 	intoxication += howmuch
 	intoxication = clamp(intoxication, 0.0, 2.0)

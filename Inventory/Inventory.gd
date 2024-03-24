@@ -468,6 +468,8 @@ func forceRestraintsWithTag(tag, amount = 1):
 	
 	for itemID in itemIDs:
 		var potentialItem = GlobalRegistry.getItemRef(itemID)
+		if !RNG.chance(potentialItem.rarity()):
+			continue
 		
 		var slot = potentialItem.getClothingSlot()
 		if(slot == null || !canEquipSlot(slot)):
@@ -504,6 +506,8 @@ func getRestraintsThatCanBeForcedDuringSex(tag):
 	
 	for itemID in itemIDs:
 		var potentialItem = GlobalRegistry.getItemRef(itemID)
+		if !RNG.chance(potentialItem.rarity()):
+			continue
 		
 		var slot = potentialItem.getClothingSlot()
 		if(slot == null || !canEquipSlot(slot)):

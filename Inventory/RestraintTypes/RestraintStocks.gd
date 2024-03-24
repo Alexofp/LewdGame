@@ -31,36 +31,26 @@ func getRemoveMessage():
 func alwaysBreaksWhenStruggledOutOf():
 	return true
 
-func getLevelDamage():
-	return 0.05
+func calcStruggleStamina(_pc, mult = 1.0):
+	return .calcStruggleStamina(_pc, mult * 2.0)
 
-func doStruggle(_pc, _minigame):
-	var _handsFree = !_pc.hasBlockedHands()
-	var _armsFree = !_pc.hasBoundArms()
-	var _legsFree = !_pc.hasBoundLegs()
-	var _canSee = !_pc.isBlindfolded()
-	var _canBite = !_pc.isBitingBlocked()
-	
-	var text = "error?"
-	var lust = 0
-	var pain = 0
-	var damage = 0
-	var stamina = 0
-	
-	if(_legsFree):
-		text = "{user.name} wiggles {user.his} whole body to try to escape."
-		damage = calcDamage(_pc)
-		stamina = 70
+func calcStruggleDamage(_pc, mult = 1.0):
+	return .calcStruggleDamage(_pc, mult / 2.0)
+
+func defaultStruggle(_pc, _minigame, response):
+	response = .defaultStruggle(_pc, _minigame, response)
+	if(!_pc.hasBoundLegs()):
+		response.text.append("{user.name} wiggles {user.his} whole body to try to escape.")
 	else:
-		text = "{user.name} helplessly wiggles {user.his} body, having {user.his} legs restrained makes this pretty much uselss."
-		damage = calcDamage(_pc, 0.5)
-		stamina = RNG.randi_range(70, 90)
-		
-	if(luckChance(_pc, 1)):
-		text += " {user.name} managed to free one of {user.his} hands!"
-		damage = max(0.5, damage)
-	elif(failChance(_pc, 10)):
-		text += " {user.name} desperately tries to break the stocks locks but just ends up more tired."
-		stamina += 20
-	
-	return {"text": text, "damage": damage, "lust": lust, "pain": pain, "stamina": stamina}
+		response.text.append("{user.name} helplessly wiggles {user.his} body, having {user.his} legs restrained makes this pretty much uselss.")
+	return response
+
+func failStruggle(_pc, _minigame, response):
+	response.text.append(" but just ends up more tired.")
+	response.stamina += calcStruggleStamina(_pc, 0.5)
+	return response
+
+func fatalFailStruggle(_pc, _minigame, response):
+	response.text.append(" but it seems like {user.youHe} just hurt yourself.")
+	response.pain += calcStrugglePain(_pc, 1)
+	return response

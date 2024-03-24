@@ -10,7 +10,7 @@ func getA():
 	return ""
 	
 func getDescription():
-	return "Bulky metal restraints. Can be locked to bind arms together"
+	return "Bulky plastic restraints. Can be locked to bind arms together"
 
 func getTakeOffScene():
 	return "CuffTuggingScene"
@@ -23,6 +23,10 @@ func getUnriggedParts(_character):
 		"wrist.L": ["res://Inventory/UnriggedModels/ZipTies/ZipTiesModel.tscn"],
 		"wrist.R": ["res://Inventory/UnriggedModels/ZipTies/ZipTiesModel.tscn"],
 	}
+
+func generateRestraintData():
+	restraintData = RestraintHandCuffsZip.new()
+	restraintData.setLevel(calculateBestRestraintLevel())
 	
 func getForcedOnMessage(isPlayer = true):
 	if(isPlayer):

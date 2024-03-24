@@ -453,15 +453,18 @@ func loadData(data):
 		var id = SAVE.loadVar(sceneData, "id", "error")
 		
 		var scene = GlobalRegistry.createScene(id)
-		add_child(scene)
-		sceneStack.append(scene)
-		print("Starting scene "+id)
-		
-		#scene.initScene(_args)
-		scene.loadData(SAVE.loadVar(sceneData, "sceneData", {}))
-		if(scene.uniqueSceneID < 0):
-			scene.uniqueSceneID = getNewUniqueSceneID()
-			scene.parentSceneUniqueID = scene.uniqueSceneID - 1 # Preserves compatability with old saves
+		if(scene == null):
+			print("Missing scene with id " + str(id) + " skip loading data.")
+		else:
+			add_child(scene)
+			sceneStack.append(scene)
+			print("Starting scene "+id)
+			
+			#scene.initScene(_args)
+			scene.loadData(SAVE.loadVar(sceneData, "sceneData", {}))
+			if(scene.uniqueSceneID < 0):
+				scene.uniqueSceneID = getNewUniqueSceneID()
+				scene.parentSceneUniqueID = scene.uniqueSceneID - 1 # Preserves compatability with old saves
 		
 	GM.ui.recreateWorld()
 	GM.world.loadData(SAVE.loadVar(data, "world", {}))

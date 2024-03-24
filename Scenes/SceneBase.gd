@@ -70,6 +70,11 @@ func run():
 		GM.ui.getCharactersPanel().switchToFightMode()
 	else:
 		GM.ui.getCharactersPanel().switchToNormalMode()
+
+	# add exit scene button if there is no other way to continue
+	if !GM.ui.hasButtons():
+		GM.ui.addButton("EXIT", "End scene", "endthescene")
+		Log.warning("Default exit in scene: " + sceneID)
 		
 	GM.pc.updateEffectPanel(GM.ui.getPlayerStatusEffectsPanel())
 	GM.ui.updateCharactersInPanel()

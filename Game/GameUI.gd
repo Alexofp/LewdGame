@@ -132,6 +132,9 @@ func addDisabledButton(text: String, tooltip: String = ""):
 	options[optionsCurrentID] = [false, text, tooltip]
 	queueUpdate()
 
+func hasButtons():
+	return !options.empty()
+
 func queueUpdate():
 	buttonsNeedUpdating = true
 	yield(get_tree(), "idle_frame")

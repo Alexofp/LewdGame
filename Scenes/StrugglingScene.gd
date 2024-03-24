@@ -1,4 +1,5 @@
 extends "res://Scenes/SceneBase.gd"
+
 var unlockedRestraintID = ""
 var actionText = ""
 var struggleText = ""
@@ -13,10 +14,21 @@ var restraintID = ""
 var shouldPlayAnimations = true
 
 #var minigameScene = preload("res://Game/Minigames/Struggling/StrugglingGame.tscn")
-var minigameScene = preload("res://Game/Minigames/ClickAtTheRightTime/ClickAtTheRightTime.tscn")
+#var minigameScene = preload("res://Game/Minigames/ClickAtTheRightTime/ClickAtTheRightTime.tscn")
+
+var minigameScene = preload("res://Game/Minigames/MatchGame/MatchGame.tscn")
+var pickMinigameScene = preload("res://Game/Minigames/MatchGame/MatchGame.tscn")
+var cutMinigameScene = preload("res://Game/Minigames/MatchGame/MatchGame.tscn")
+var unlockMinigameScene = preload("res://Game/Minigames/ClickAtTheRightTime/ClickAtTheRightTime.tscn")
 
 func _init():
 	sceneID = "StrugglingScene"
+	if OPTIONS.isDebugPanelEnabled():
+		minigameScene = preload("res://Game/Minigames/TestGame/TestGame.tscn")
+		pickMinigameScene = preload("res://Game/Minigames/TestGame/TestGame.tscn")
+		cutMinigameScene = preload("res://Game/Minigames/TestGame/TestGame.tscn")
+		unlockMinigameScene = preload("res://Game/Minigames/TestGame/TestGame.tscn")
+
 
 func _initScene(_args = []):
 	if(_args.size() > 0):
@@ -38,10 +50,10 @@ func _run():
 		var isBlind = GM.pc.isBlindfolded()
 		saynn("Pick the restraint you wanna focus on. Keep in mind that some restraints will be harder to remove depending on what you have on. Crying from pain or moaning loudly from an orgasm will probably attract someone")
 		
-		if(GM.pc.getInventory().hasItemID("restraintkey")):
-			addButtonAt(13, "Use key", "Use one of your restraint keys to unlock something", "usekey")
+		if(GM.pc.getInventory().hasItemID("restraintkey") || GM.pc.getInventory().hasItemID("lockPicker") || GM.pc.getInventory().hasItemID("safetyCutter")):
+			addButtonAt(13, "Use tool", "Use one of your tool to unlock something", "usetool")
 		else:
-			addDisabledButtonAt(13, "Use key", "You don't have any restraint keys")
+			addDisabledButtonAt(13, "Use tool", "You don't have any usable tool")
 		addButtonAt(14, "Give up", "Stop struggling", "endthescenedidnothing")
 		
 		for item in GM.pc.getInventory().getEquppedRestraints():
@@ -49,7 +61,11 @@ func _run():
 			
 			sayn(item.getVisibleName()+", restraint level: "+restraintData.getVisibleLevel(isBlind))
 			#sayn("- Durability: "+restraintData.getVisibleDurability())
-			saynn("- Tightness: "+restraintData.getVisibleTightness()+" ("+restraintData.getTightnessPercentString()+")")
+			if restraintData.isLocked():
+				sayn("- Tightness: "+restraintData.getVisibleTightness()+" ("+restraintData.getTightnessPercentString()+")")
+				saynn("- Is locked: "+restraintData.getVisibleLockStrength()+" ("+restraintData.getLockPercentString()+")")
+			else:
+				saynn("- Tightness: "+restraintData.getVisibleTightness()+" ("+restraintData.getTightnessPercentString()+")")
 			
 			if(!restraintData.canStruggle()):
 				continue
@@ -59,8 +75,51 @@ func _run():
 			else:
 				addDisabledButton(item.getVisibleName(), "You are out of stamina")
 
-		
-		#generateActions()
+
+### tools ###
+
+	if(state == "usetool"):
+		var keyAmount = GM.pc.getInventory().getAmountOf("restraintkey")
+		var pickerAmount = GM.pc.getInventory().getAmountOf("lockPicker")
+		var cutterAmount = GM.pc.getInventory().getAmountOf("safetyCutter")
+		if keyAmount > 0:
+			saynn("You have "+str(keyAmount)+" "+Util.multipleOrSingularEnding(keyAmount, "key")+". Each one can unlock one piece of gear.")
+			addButton("Key", "Use one of your key to unlock something", "usekey")
+		if pickerAmount > 0:
+			saynn("You have "+str(pickerAmount)+" "+Util.multipleOrSingularEnding(keyAmount, "lock pick")+". Each one can pick a lock on one piece of gear.")
+			addButton("Picker", "Use one of your lock pick to pick some lock", "usepicker")
+		if cutterAmount > 0:
+			saynn("You have "+str(cutterAmount)+" "+Util.multipleOrSingularEnding(keyAmount, "safety cutter")+". Each one can cut one piece of gear.")
+			addButton("Cutter", "Use one of your safety cutter to cut something", "usecutter")
+
+		saynn("Which one do you wanna use?")
+		addButton("Back", "You don't wanna use anything", "")
+
+	if(state == "usepicker"):
+		var pickerAmount = GM.pc.getInventory().getAmountOf("lockPicker")
+		saynn("You have "+str(pickerAmount)+" "+Util.multipleOrSingularEnding(pickerAmount, "lock pick")+". Each one can pick a lock on one piece of gear.")
+		saynn("Which restraint do you wanna lockpick.")
+
+		for item in GM.pc.getInventory().getEquppedRestraints():
+			var restraintData: RestraintData = item.getRestraintData()
+			if(!restraintData.canBeLockPicked()):
+				addDisabledButton(item.getVisibleName(), "This restraint doesn't seem to have a keyhole")
+				continue
+			addButton(item.getVisibleName(), item.getVisisbleDescription(), "dolockpick", [item.getUniqueID()])
+		addButton("Back", "You don't wanna lockpick anything", "usetool")
+
+	if(state == "usecutter"):
+		var cutterAmount = GM.pc.getInventory().getAmountOf("safetyCutter")
+		saynn("You have "+str(cutterAmount)+" "+Util.multipleOrSingularEnding(cutterAmount, "safety cutter")+". Each one can cut one piece of gear.")
+		saynn("Which restraint do you wanna cut.")
+
+		for item in GM.pc.getInventory().getEquppedRestraints():
+			var restraintData: RestraintData = item.getRestraintData()
+			if(!restraintData.canBeCut()):
+				addDisabledButton(item.getVisibleName(), "this type of restriction doesn't seem to have a good place to cut, you can try if you loosen it a bit")
+				continue
+			addButton(item.getVisibleName(), item.getVisisbleDescription(), "docut", [item.getUniqueID()])
+		addButton("Back", "You don't wanna cut anything", "usetool")
 		
 	if(state == "usekey"):
 		var keyAmount = GM.pc.getInventory().getAmountOf("restraintkey")
@@ -73,27 +132,11 @@ func _run():
 				addDisabledButton(item.getVisibleName(), "This restraint doesn't seem to have a keyhole")
 				continue
 			addButton(item.getVisibleName(), item.getVisisbleDescription(), "dounlock", [item.getUniqueID()])
-		addButton("Back", "You don't wanna unlock anything", "")
+		addButton("Back", "You don't wanna unlock anything", "usetool")
 
-	if(state == "keyminigame"):
-		saynn("Since you can't use your fingers you have to carefully balance the key between your palms and guide it towards the lock.")
-		
-		saynn("To succsessfully unlock the restraint you have to guess a number between 1 and 15. You have "+str(keyGameTries)+" "+Util.multipleOrSingularEnding(keyGameTries, "try", "tries")+" left")
 
-		if(keyText != ""):
-			saynn(keyText)
-
-		#addTextbox("key_number")
-		
-		#addButton("Guess", "Try and guess this number", "key_guess")
-		for _i in range(1, 16):
-			addButton(str(_i), "Try this number", "key_guess", [_i])
-
-	if(state == "keyminigameFailed"):
-		saynn("Oops, you dropped the key and it broke. There goes that.")
-		
-		addButton("Continue", "Heck", "checkifokay")
-
+### minigames ###
+	
 	if(state == "startStruggleAgainst"):
 		var item = GM.pc.getInventory().getItemByUniqueID(restraintID)
 		var restraintData: RestraintData = item.getRestraintData()
@@ -102,23 +145,75 @@ func _run():
 			var animToPlay = restraintData.getResistAnimation()
 			if(animToPlay != null && animToPlay != ""):
 				playAnimation(StageScene.Solo, animToPlay)
-		
+
 		var game = minigameScene.instance()
+		if game.has_method("config"):
+			game.config({"level":restraintData.getLevel(), "blind":GM.pc.isBlindfolded()})
 		GM.ui.addCustomControl("minigame", game)
-		if(OPTIONS.isHardStruggleEnabled()):
-			game.setHardStruggleEnabled(true)
-		if(GM.pc.hasPerk(Perk.BDSMInstantEscape) && game.has_method("instantEscapePerk")):
-			game.instantEscapePerk()
-		if(GM.pc.isBlindfolded() && game.has_method("setIsBlindfolded")):
-			game.setIsBlindfolded(true)
-		if(GM.pc.hasPerk(Perk.BDSMPerfectStreak) && game.has_method("setHasAdvancedPerk")):
-			game.setHasAdvancedPerk(true)
-		
-		game.setDifficulty(restraintData.getLevel())
+		configureMinigame(game, restraintData)
 		game.connect("minigameCompleted", self, "onMinigameCompleted")
 		addButton("Give up", "Give up the struggle and lose 10 stamina", "giveupstruggle")
+		
+	if state == "pickminigame":
+		var item = GM.pc.getInventory().getItemByUniqueID(restraintID)
+		var restraintData: RestraintData = item.getRestraintData()
+		
+		if(shouldPlayAnimations):
+			var animToPlay = restraintData.getResistAnimation()
+			if(animToPlay != null && animToPlay != ""):
+				playAnimation(StageScene.Solo, animToPlay)
+		
+		var game = pickMinigameScene.instance()
+		if game.has_method("config"):
+			game.config({"level":restraintData.getLevel(), "blind":GM.pc.isBlindfolded()})
+		GM.ui.addCustomControl("minigame", game)
+		configureMinigame(game, restraintData)
+		game.connect("minigameCompleted", self, "onPickMinigameCompleted")
+		addButton("Give up", "Give it up and lose 10 stamina", "giveupstruggle")
 
-	if(state == "struggleAgainst"):
+	
+	if state == "cutminigame":
+		var item = GM.pc.getInventory().getItemByUniqueID(restraintID)
+		var restraintData: RestraintData = item.getRestraintData()
+		
+		if(shouldPlayAnimations):
+			var animToPlay = restraintData.getResistAnimation()
+			if(animToPlay != null && animToPlay != ""):
+				playAnimation(StageScene.Solo, animToPlay)
+		
+		var game = pickMinigameScene.instance()
+		if game.has_method("config"):
+			game.config({"level":restraintData.getLevel(), "blind":GM.pc.isBlindfolded()})
+		GM.ui.addCustomControl("minigame", game)
+		configureMinigame(game, restraintData)
+		game.connect("minigameCompleted", self, "onCutMinigameCompleted")
+		addButton("Give up", "Give it up and lose 10 stamina", "giveupstruggle")
+
+		
+	if state == "unlockminigame":
+		var item = GM.pc.getInventory().getItemByUniqueID(restraintID)
+		var restraintData: RestraintData = item.getRestraintData()
+		
+		if(shouldPlayAnimations):
+			var animToPlay = restraintData.getResistAnimation()
+			if(animToPlay != null && animToPlay != ""):
+				playAnimation(StageScene.Solo, animToPlay)
+		
+		var game = unlockMinigameScene.instance()
+		configureMinigame(game, restraintData)
+		GM.ui.addCustomControl("minigame", game)
+		game.connect("minigameCompleted", self, "onUnlockMinigameCompleted")
+		addButton("Give up", "Give it up and lose 10 stamina", "giveupstruggle")
+
+
+### results ###
+
+	if state == "keyminigameFailed":
+		saynn("Oops, you dropped the key and it broke. There goes that.")
+		
+		addButton("Continue", "Heck", "checkifokay")
+	
+	if state == "struggleAgainst" || state == "pickSomething" || state == "cutSomething" || state == "unlockSomething":
 		saynn(struggleText)
 		
 		if(additionalStruggleText != ""):
@@ -131,7 +226,6 @@ func _run():
 			addButton("No", "Throw it away", "getridandcheckifokay")
 		else:
 			addButton("Continue", "Okay", "checkifokay")
-		
 
 	if(state == "orgasm"):
 		saynn("It's too much, you arch your back and moan loudly as you cum. You were so loud that someone might have heard that. (Temporary text)")
@@ -147,24 +241,53 @@ func _run():
 			addButton("Continue", "Aw", "endthescene")
 		else:
 			addButton("Continue", "Good", "")
-		
+	
 	if(state == "toolusty"):
 		saynn("You are too aroused to be able to escape from restraints")
 		
 		addButton("Continue", "Oh no", "endthescene")#"spottedcheck")
-		
+	
 	if(state == "toopainful"):
 		saynn("It's too painful! You let out a desperate cry. You were so loud that someone might have heard that. (Temporary text)")
 
 		addButton("Continue", "Oh no", "endthescene")
-		
+	
 	if(state == "unlockedGear"):
 		saynn("You successfully unlocked the restraint. The key snaps in half, rendering it useless")
-		
+	
 		addButton("Continue", "Good", "checkifokay")
 
-func onMinigameCompleted(result):
-	GM.main.pickOption("struggleAgainst", [restraintID, result])
+
+
+func onMinigameCompleted(score, result = {}):
+	GM.main.pickOption("struggleAgainst", [restraintID, score, result])
+
+func onPickMinigameCompleted(score, result = {}):
+	GM.main.pickOption("pickSomething", [restraintID, score, result])
+
+func onCutMinigameCompleted(score, result = {}):
+	GM.main.pickOption("cutSomething", [restraintID, score, result])
+
+func onUnlockMinigameCompleted(score, result = {}):
+	GM.main.pickOption("unlockSomething", [restraintID, score, result])
+
+# for old minigames
+func configureMinigame(_game, _restraintData):
+	if OPTIONS.isHardStruggleEnabled() && _game.has_method("setHardStruggleEnabled"):
+		_game.setHardStruggleEnabled(true)
+	if GM.pc.hasPerk(Perk.BDSMInstantEscape) && _game.has_method("instantEscapePerk"):
+		_game.instantEscapePerk()
+	if GM.pc.isBlindfolded() && _game.has_method("setIsBlindfolded"):
+		_game.setIsBlindfolded(true)
+	if GM.pc.hasPerk(Perk.BDSMPerfectStreak) && _game.has_method("setHasAdvancedPerk"):
+		_game.setHasAdvancedPerk(true)
+	if GM.pc.hasPerk(Perk.BDSMBetterStruggling) && _game.has_method("setBetterStruggling"):
+		_game.setBetterStruggling(true)
+	if GM.pc.hasPerk(Perk.BDSMBetterKeys) && _game.has_method("setBetterKeys"):
+		_game.setBetterKeys(true)
+	if _game.has_method("setDifficulty"):
+		_game.setDifficulty(_restraintData.getLevel())
+
 		
 func _react(_action: String, _args):
 	if(_action == "endthescene"):
@@ -184,109 +307,325 @@ func _react(_action: String, _args):
 	if(_action == "startStruggleAgainst"):
 		var item = GM.pc.getInventory().getItemByUniqueID(_args[0])
 		var restraintData: RestraintData = item.getRestraintData()
+		restraintID = _args[0]
 		
 		if(!restraintData.shouldDoStruggleMinigame(GM.pc)):
 			_action = "struggleAgainst"
-		else:
-			restraintID = _args[0]
+			_args = [restraintID, 10.0, {"InstantRemove": true}]
 
+		elif restraintData.canInstantEscape(GM.pc) :
+			_action  = "struggleAgainst"
+			_args = [restraintID, 2.0, {"InstantEscape": true}]
+
+
+### main struggle block ###
 	if(_action == "struggleAgainst"):
 		var item = GM.pc.getInventory().getItemByUniqueID(_args[0])
 		var restraintData: RestraintData = item.getRestraintData()
-		var minigameStatus = 1.0
-		var finalMinigameStatus = 1.0
-		
-		var instantUnlock = false
-		var fatallFail = false
-		if(_args.size() > 1):
-			finalMinigameStatus = float(_args[1])
-			
-			if(float(_args[1]) >= 100.0):
-				instantUnlock = true
-				finalMinigameStatus = 1.0
-			var minigameResult = float(_args[1])
-			minigameStatus = pow(minigameResult, 1.5) * 2.0
-			if(minigameResult >= 1.0 && GM.pc.hasPerk(Perk.BDSMBetterStruggling)):
-				minigameStatus *= 2.0
-			if float(_args[1]) < 0.0:
-				fatallFail = true
-				minigameStatus = -pow(-minigameResult, 1.5) * 2.0
-				finalMinigameStatus = 0.0
-		
+		var gameScore = float(_args[1])
+		var gameResult = Dictionary(_args[2])
+						
 		var damage = 0.0
+		var lockDamage = 0.0
 		var addLust = 0
 		var addPain = 0
 		var addStamina = 0
+		var addTime = 60
 
-		var struggleData
-		if fatallFail:
-			struggleData = restraintData.doFailingStruggle(GM.pc, minigameStatus)
-		else:
-			struggleData = restraintData.doStruggle(GM.pc, minigameStatus)
+		var _data = restraintData.doStruggle(GM.pc, gameScore).build()
 		
-		if(struggleData.has("damage")):
-			damage = struggleData["damage"] * abs(minigameStatus)
-			if(damage > 0.0 && instantUnlock):
-				damage = 1.0
-		if(struggleData.has("lust") && struggleData["lust"] > 0):
-			addLust = struggleData["lust"]
-		if(struggleData.has("pain") && struggleData["pain"] > 0):
-			addPain = struggleData["pain"]
-		if(struggleData.has("stamina") && struggleData["stamina"] != 0):
-			addStamina = struggleData["stamina"]
+		if(_data.has("damage")):
+			damage = _data["damage"]
+		if _data.has("lockDamage"):
+			lockDamage = _data["lockDamage"]
+		if(_data.has("lust") && _data["lust"] > 0):
+			addLust = _data["lust"]
+		if(_data.has("pain") && _data["pain"] > 0):
+			addPain = _data["pain"]
+		if(_data.has("stamina") && _data["stamina"] != 0):
+			addStamina = _data["stamina"]
 		
-		struggleText = struggleData["text"]
+		struggleText = _data["text"]
 		
 		if(!fightMode):
 			var turnData = GM.pc.processStruggleTurn(true)
 			damage += turnData["damage"]
+			lockDamage += turnData["lockDamage"]
 			addLust += turnData["lust"]
 			addPain += turnData["pain"]
 			addStamina += turnData["stamina"]
 			additionalStruggleText = turnData["text"]
+
+		if gameResult.has("addTime"):
+			addTime = gameResult.get("addTime")
 			
 		# less xp without progression more in combat
-		if(!instantUnlock && damage > 0.0 && damage < 1.0):
-			var mult = 4
+		if damage > 0.0:
+			var mult = 3
 			if fightMode:
 				mult = 5
-			GM.pc.addSkillExperience(Skill.BDSM, restraintData.getLevel() * mult)
-			
-		if(fatallFail):
-			addMessage("You tried really hard but you completely failed.")
-		if(damage < 0.0):
+			GM.pc.addSkillExperience(Skill.BDSM, restraintData.getLevel() * mult * damage)
+
+		#uniform block
+		if damage < 0.0:
 			restraintData.takeDamage(damage)
-			addMessage("You lost "+str(Util.roundF(-damage*100.0, 1))+"% of progress")
-		if(damage > 0.0):
+			addMessage("You lost "+Util.limitedPercent(-damage)+"% of progress.")
+		if damage > 0.0:
 			restraintData.takeDamage(damage)
-			addMessage("You made "+str(Util.roundF(damage*100.0, 1))+"% of progress ("+str(Util.roundF(finalMinigameStatus*100.0, 1))+"% efficiency)")
-		if(addLust != 0):
+			addMessage("You made "+Util.limitedPercent(damage)+"% of progress.")
+		if lockDamage > 0.0:
+			restraintData.takeLockDamage(lockDamage)
+			addMessage("You loosened lock "+Util.limitedPercent(lockDamage)+"% of progress.")
+		if lockDamage < 0.0:
+			restraintData.takeLockDamage(lockDamage)
+			addMessage("You lock stucked you lost "+Util.limitedPercent(-lockDamage)+"% of progress.")
+		if addLust != 0:
 			addLust = GM.pc.receiveDamage(DamageType.Lust, addLust)
-			addMessage("You received "+str(addLust)+" lust")
-		if(addPain != 0):
+			addMessage("You received "+str(addLust)+" lust.")
+		if addPain != 0:
 			addPain = GM.pc.receiveDamage(DamageType.Physical, addPain)
-			addMessage("You received "+str(addPain)+" pain")
-		if(addStamina != 0):
+			addMessage("You received "+str(addPain)+" pain.")
+		if addStamina < 0:
 			GM.pc.addStamina(-addStamina)
+			addMessage("You gained "+str(-addStamina)+" stamina.")
+		if addStamina > 0:
+			GM.pc.addStamina(-addStamina)
+			addMessage("You used "+str(addStamina)+" stamina.")
 			
-			if(addStamina < 0):
-				addMessage("You gained "+str(-addStamina)+" stamina")
-			else:
-				addMessage("You used "+str(addStamina)+" stamina")
 		
 		canKeepTheRestraint = false
-		if(restraintData.shouldBeRemoved()):
+		if restraintData.shouldBeRemoved():
 			struggleText += "\n[b]"+restraintData.getRemoveMessage()+"[/b]"
 			restraintData.onStruggleRemoval()
 			GM.pc.getInventory().removeEquippedItem(item)
 			
-			if(!restraintData.alwaysBreaksWhenStruggledOutOf() && (GM.pc.hasPerk(Perk.BDSMCollector) || restraintData.alwaysSavedWhenStruggledOutOf())):
+			if restraintData.alwaysBreaksWhenStruggledOutOf():
+				canKeepTheRestraint = false
+			elif restraintData.alwaysSavedWhenStruggledOutOf():
 				canKeepTheRestraint = true
+			else:
+				# strugling can damage the bondage gear
+				var _newLevel = restraintData.getLevel()
+				if !GM.pc.hasPerk(Perk.BDSMCollector) || RNG.chance(50):
+					_newLevel = int(RNG.randf_rangeAdv(0, restraintData.getLevel()))
+
+				if _newLevel >= 1:
+					canKeepTheRestraint = true
+					restraintData.setLevel(_newLevel)
+					GM.pc.getInventory().addItem(item)
+					keptRestraintID = item.getUniqueID()
+		
+		processTime(addTime)
+
+
+### main lockpick block ###
+	if _action == "pickSomething":
+		var item = GM.pc.getInventory().getItemByUniqueID(_args[0])
+		var restraintData: RestraintData = item.getRestraintData()
+		var gameScore = float(_args[1])
+		var gameResult = Dictionary(_args[2])
+						
+		var damage = 0.0
+		var lockDamage = 0.0
+		var addLust = 0
+		var addPain = 0
+		var addStamina = 0
+		var addTime = 60
+
+		var _data = restraintData.doLockpick(GM.pc, gameScore).build()
+
+		if _data.has("damage"):
+			damage = _data["damage"]
+		if _data.has("lockDamage"):
+			lockDamage = _data["lockDamage"]
+		if _data.has("lust"):
+			addLust = _data["lust"]
+		if _data.has("pain"):
+			addPain = _data["pain"]
+		if _data.has("stamina"):
+			addStamina = _data["stamina"]
+		
+		struggleText = _data["text"]
+		
+		if(!fightMode):
+			var _turnData = GM.pc.processLockpickTurn(true)
+			damage += _turnData["damage"]
+			lockDamage += _turnData["lockDamage"]
+			addLust += _turnData["lust"]
+			addPain += _turnData["pain"]
+			addStamina += _turnData["stamina"]
+			additionalStruggleText = _turnData["text"]
+
+		if gameResult.has("addTime"):
+			addTime = gameResult.get("addTime")
+		
+		
+		# no xp without progression more in combat
+		if lockDamage > 0.0:
+			var mult = 3
+			if fightMode:
+				mult = 5
+			GM.pc.addSkillExperience(Skill.BDSM, restraintData.getLevel() * mult)
+		
+		#uniform block
+		if damage < 0.0:
+			restraintData.takeDamage(damage)
+			addMessage("You lost "+Util.limitedPercent(-damage)+"% of progress.")
+		if damage > 0.0:
+			restraintData.takeDamage(damage)
+			addMessage("You made "+Util.limitedPercent(damage)+"% of progress.")
+		if lockDamage > 0.0:
+			restraintData.takeLockDamage(lockDamage)
+			addMessage("You loosened lock "+Util.limitedPercent(lockDamage)+"% of progress.")
+		if lockDamage < 0.0:
+			restraintData.takeLockDamage(lockDamage)
+			addMessage("You lock stucked you lost "+Util.limitedPercent(-lockDamage)+"% of progress.")
+		if addLust != 0:
+			addLust = GM.pc.receiveDamage(DamageType.Lust, addLust)
+			addMessage("You received "+str(addLust)+" lust.")
+		if addPain != 0:
+			addPain = GM.pc.receiveDamage(DamageType.Physical, addPain)
+			addMessage("You received "+str(addPain)+" pain.")
+		if addStamina < 0:
+			GM.pc.addStamina(-addStamina)
+			addMessage("You gained "+str(-addStamina)+" stamina.")
+		if addStamina > 0:
+			GM.pc.addStamina(-addStamina)
+			addMessage("You used "+str(addStamina)+" stamina.")
+		
+		if(!restraintData.isLocked()):
+			struggleText += "\n[b]"+restraintData.getLockpickedMessage()+"[/b]"
+			restraintData.onLockPicked()
+
+		if gameScore < 0 || gameScore > 0.5:
+			GM.pc.getInventory().removeXOfOrDestroy("lockPicker", 1)
+			addMessage("Lock picker destroyed.")
+		
+		processTime(addTime)
+
+
+### main cut block ###
+	if _action == "cutSomething":
+		var item = GM.pc.getInventory().getItemByUniqueID(_args[0])
+		var restraintData: RestraintData = item.getRestraintData()
+		var gameScore = float(_args[1])
+		var gameResult = Dictionary(_args[2])
+						
+		var damage = 0.0
+		var lockDamage = 0.0
+		var addLust = 0
+		var addPain = 0
+		var addStamina = 0
+		var addTime = 60
+
+		var _data = restraintData.doCut(GM.pc, gameScore).build()
+
+		if _data.has("damage"):
+			damage = _data["damage"]
+		if _data.has("lockDamage"):
+			lockDamage = _data["lockDamage"]
+		if _data.has("lust"):
+			addLust = _data["lust"]
+		if _data.has("pain"):
+			addPain = _data["pain"]
+		if _data.has("stamina"):
+			addStamina = _data["stamina"]
+		
+		struggleText = _data["text"]
+		
+		if(!fightMode):
+			var _turnData = GM.pc.processLockpickTurn(true)
+			damage += _turnData["damage"]
+			lockDamage += _turnData["lockDamage"]
+			addLust += _turnData["lust"]
+			addPain += _turnData["pain"]
+			addStamina += _turnData["stamina"]
+			additionalStruggleText = _turnData["text"]
 			
-				GM.pc.getInventory().addItem(item)
-				keptRestraintID = item.getUniqueID()
+		if gameResult.has("addTime"):
+			addTime = gameResult.get("addTime")
+			
+			
+		# no xp without progression more in combat
+		if damage > 0.0:
+			var mult = 3
+			if fightMode:
+				mult = 5
+			GM.pc.addSkillExperience(Skill.BDSM, restraintData.getLevel() * mult)
+
+		#uniform block
+		if damage < 0.0:
+			restraintData.takeDamage(damage)
+			addMessage("You lost "+Util.limitedPercent(-damage)+"% of progress.")
+		if damage > 0.0:
+			restraintData.takeDamage(damage)
+			addMessage("You made "+Util.limitedPercent(damage)+"% of progress.")
+		if lockDamage > 0.0:
+			restraintData.takeLockDamage(lockDamage)
+			addMessage("You loosened lock "+Util.limitedPercent(lockDamage)+"% of progress.")
+		if lockDamage < 0.0:
+			restraintData.takeLockDamage(lockDamage)
+			addMessage("You lock stucked you lost "+Util.limitedPercent(-lockDamage)+"% of progress.")
+		if addLust != 0:
+			addLust = GM.pc.receiveDamage(DamageType.Lust, addLust)
+			addMessage("You received "+str(addLust)+" lust.")
+		if addPain != 0:
+			addPain = GM.pc.receiveDamage(DamageType.Physical, addPain)
+			addMessage("You received "+str(addPain)+" pain.")
+		if addStamina < 0:
+			GM.pc.addStamina(-addStamina)
+			addMessage("You gained "+str(-addStamina)+" stamina.")
+		if addStamina > 0:
+			GM.pc.addStamina(-addStamina)
+			addMessage("You used "+str(addStamina)+" stamina.")
+		
+		
+		canKeepTheRestraint = false
+		if restraintData.shouldBeRemoved():
+			struggleText += "\n[b]"+restraintData.getRemoveMessage()+"[/b]"
+			restraintData.onStruggleRemoval()
+			GM.pc.getInventory().removeEquippedItem(item)
+			
+			if restraintData.alwaysBreaksWhenStruggledOutOf():
+				canKeepTheRestraint = false
+			elif restraintData.alwaysSavedWhenStruggledOutOf():
+				canKeepTheRestraint = true
+			# ripping usually destroys the bondage gear
+			elif GM.pc.hasPerk(Perk.BDSMCollector) && RNG.chance(50):
+				var _newLevel = int(RNG.randf_rangeAdv(-1, restraintData.getLevel()))
+				if _newLevel >= 1:
+					canKeepTheRestraint = true
+					restraintData.setLevel(restraintData.getLevel())
+					GM.pc.getInventory().addItem(item)
+					keptRestraintID = item.getUniqueID()
+
+		if gameScore < 0 || gameScore > 0.5:
+			GM.pc.getInventory().removeXOfOrDestroy("safetyCutter", 1)
+			addMessage("Safety cutter destroyed.")
+		
+		processTime(addTime)
+
+### main unlock block ###
+	if _action == "unlockSomething":
+		var item = GM.pc.getInventory().getItemByUniqueID(_args[0])
+		var restraintData: RestraintData = item.getRestraintData()
+		var minigameStatus = 1.0
+		
+		if(_args.size() > 1):
+			minigameStatus = float(_args[1])
+
+		if minigameStatus < 0.5:
+			setState("keyminigameFailed")
+		else:
+			if restraintData.alwaysBreaksWhenStruggledOutOf():
+				GM.pc.getInventory().removeEquippedItem(item)
+			else:
+				GM.pc.getInventory().unequipItem(item)
+			setState("unlockedGear")
 		
 		processTime(1*60)
+		return
+
 		
 	if(_action == "getridandcheckifokay"):
 		var item = GM.pc.getInventory().getItemByUniqueID(keptRestraintID)
@@ -312,76 +651,41 @@ func _react(_action: String, _args):
 	if(_action == "spottedcheck"):
 		setState("notspotted")
 		return
+
+
+	if(_action == "dolockpick"):
+		restraintID = _args[0]
+		var item = GM.pc.getInventory().getItemByUniqueID(restraintID)
+		var _restraintData: RestraintData = item.getRestraintData()
+		
+		keyText = ""
+		setState("pickminigame")
+		return
+
+	if(_action == "docut"):
+		restraintID = _args[0]
+		var item = GM.pc.getInventory().getItemByUniqueID(restraintID)
+		var _restraintData: RestraintData = item.getRestraintData()
+		
+		keyText = ""
+		setState("cutminigame")
+		return
 		
 	if(_action == "dounlock"):
-		unlockedRestraintID = _args[0]
-		var item = GM.pc.getInventory().getItemByUniqueID(unlockedRestraintID)
-		var restraintData: RestraintData = item.getRestraintData()
+		restraintID = _args[0]
+		var item = GM.pc.getInventory().getItemByUniqueID(restraintID)
+		var _restraintData: RestraintData = item.getRestraintData()
 		
 		GM.pc.getInventory().removeXOfOrDestroy("restraintkey", 1)
 		if(!GM.pc.hasBlockedHands() && !GM.pc.hasBoundArms()):
-			if(restraintData == null || restraintData.alwaysBreaksWhenStruggledOutOf()):
+			if(_restraintData == null || _restraintData.alwaysBreaksWhenStruggledOutOf()):
 				GM.pc.getInventory().removeEquippedItem(item)
 			else:
 				GM.pc.getInventory().unequipItem(item)
 			setState("unlockedGear")
 		else:
-			keyGameTries = 3
-			if(GM.pc.hasPerk(Perk.BDSMBetterKeys)):
-				keyGameTries += 2
-			keyGameValue = RNG.randi_range(1, 15)
 			keyText = ""
-			setState("keyminigame")
-		return
-		
-	if(_action == "key_guess"):
-		
-#		var textboxText = getTextboxData("key_number")
-#		if(textboxText == "" || !textboxText.is_valid_integer()):
-#			keyText = ""
-#			setState("keyminigame")
-#			return
-		
-		var number = _args[0]#int(textboxText)
-		if(number == keyGameValue):
-			var item = GM.pc.getInventory().getItemByUniqueID(unlockedRestraintID)
-			var restraintData: RestraintData = item.getRestraintData()
-			if(restraintData == null || restraintData.alwaysBreaksWhenStruggledOutOf()):
-				GM.pc.getInventory().removeEquippedItem(item)
-			else:
-				GM.pc.getInventory().unequipItem(item)
-			setState("unlockedGear")
-			return
-		
-		var diff = abs(number - keyGameValue)
-		if(number > keyGameValue):
-			if(diff >= 8):
-				keyText = str(number)+" is not even close. You almost dropped the key right there"
-			elif(diff >= 5):
-				keyText = str(number)+" is way too much"
-			elif(diff >= 3):
-				keyText = str(number)+" is too much"
-			elif(diff >= 2):
-				keyText = str(number)+" is too much but you feel that you're pretty close"
-			else:
-				keyText = str(number)+" is very close."
-		if(number < keyGameValue):
-			if(diff >= 8):
-				keyText = str(number)+" is not even close. You almost dropped the key right there"
-			elif(diff >= 5):
-				keyText = str(number)+" is way too little"
-			elif(diff >= 3):
-				keyText = str(number)+" is too little"
-			elif(diff >= 2):
-				keyText = str(number)+" is too little but you feel that you're pretty close"
-			else:
-				keyText = str(number)+" is very close."
-		
-		keyGameTries -= 1
-		if(keyGameTries <= 0):
-			setState("keyminigameFailed")
-		else:
-			setState("keyminigame")
+			setState("unlockminigame")
 		return
 		
 	setState(_action)

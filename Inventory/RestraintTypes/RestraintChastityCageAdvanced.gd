@@ -1,52 +1,30 @@
 extends RestraintChastityCage
-
-func canUnlockWithKey():
-	return false
 	
 func alwaysSavedWhenStruggledOutOf():
 	return true
 
-#func getLevelDamage():
-#	return .getLevelDamage() * 0.2
+func canBreakLock(_pc, _minigame):
+	return false 
 
-func doStruggle(_pc, _minigame):
-	var _handsFree = !_pc.hasBlockedHands()
-	var _armsFree = !_pc.hasBoundArms()
-	var _legsFree = !_pc.hasBoundLegs()
-	var _canSee = !_pc.isBlindfolded()
-	var _canBite = !_pc.isBitingBlocked()
-	
-	var text = "error?"
-	var lust = 0
-	var pain = 0
-	var damage = 0
-	var stamina = 0
-	
-	if(failChance(_pc, 10) || (_minigame < 0.7)):
-		text = "{user.name}'s chastity cage BEEPS.. And then suddenly [b]shocks[/b] {user.his} {user.penis}!"
-		stamina = 0
-		pain = RNG.randi_range(10, 20)
+func failStruggle(_pc, _minigame, response):
+	if failChance(_pc, 30):
+		response.text.append("{user.name}'s chastity cage BEEPS.. And then suddenly [b]shocks[/b] {user.his} {user.penis}!")
+		response.pain += calcStrugglePain(_pc, 2)
 	else:
-		if(_handsFree && _armsFree):
-			text = "{user.name} tugs on {user.his} chastity cage, trying to take it off."
-			damage = calcDamage(_pc)
-			stamina = 10
-		else:
-			text = "{user.name} desperately tries to wiggle {user.his} chastity cage off but makes almost no progress."
-			damage = calcDamage(_pc, 0.1)
-			stamina = 5
-		
-		if(_handsFree && _armsFree && failChance(_pc, 20)):
-			text += " Touching {user.his} caged cock made {user.him} quite aroused."
-			lust = scaleDamage(5)
-		elif(failChance(_pc, 20)):
-			text += " {user.He} accidentally pinched {user.his} balls. Ow."
-			pain = scaleDamage(5)
-		
-		if(failChance(_pc, 30)):
-			text += " {user.name}'s chastity cage BEEPS.. But doesn't do anything to {user.him} this time. Phew."
-		
-	#damage = calcDamage()
-	
-	return {"text": text, "damage": damage, "lust": lust, "pain": pain, "stamina": stamina}
+		response.text.append("{user.name}'s chastity cage BEEPS.. But doesn't do anything to {user.him} this time. Phew.")
+	return response
 
+
+func sucessStruggleLocked(_pc, _minigame, response):
+	response.text.append("Nothing despite best efforts, there's no way to escape as long as the thing is locked.")
+	return response
+
+
+func afterPick(_pc, _minigame, response):
+	if failChance(_pc, 20):
+		response.text.append("Opps, {user.name}'s chastity cage BEEPS.. And then suddenly [b]shocks[/b] {user.his} {user.penis}!")
+		response.pain += calcPickPain(_pc, 1)
+	elif failChance(_pc, 20):
+		response.text.append("{user.name}'s chastity cage BEEPS.. But doesn't do anything to {user.him} this time. Phew.")
+
+	return response

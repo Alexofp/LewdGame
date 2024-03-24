@@ -215,7 +215,7 @@ gridColor = 5
 population = 2
 lootable = true
 lootTableId = "engineer"
-lootItemIds = PoolStringArray( "painkillers", "painkillers", "painkillers", "EnergyDrink", "EnergyDrink", "restraintkey", "restraintkey" )
+lootItemIds = PoolStringArray( "painkillers", "painkillers", "painkillers", "EnergyDrink", "EnergyDrink", "restraintkey", "safetyCutter", "lockPicker" )
 lootCredits = 3
 lootEveryXDays = 7
 

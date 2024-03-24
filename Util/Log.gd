@@ -15,3 +15,7 @@ static func warning(text: String):
 static func print(text: String):
 	print(text)
 	Console.printLine(text)
+
+static func info(text: String):
+	print(text)
+

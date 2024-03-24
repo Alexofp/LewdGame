@@ -4,46 +4,48 @@ class_name RestraintHandCuffs
 func _init():
 	restraintType = RestraintType.WristCuffs
 
-func doStruggle(_pc, _minigame):
-	var _handsFree = !_pc.hasBlockedHands()
-	var _armsFree = !_pc.hasBoundArms()
-	var _legsFree = !_pc.hasBoundLegs()
-	var _canSee = !_pc.isBlindfolded()
-	var _canBite = !_pc.isBitingBlocked()
-	
-	var text = "error?"
-	var lust = 0
-	var pain = 0
-	var damage = 0
-	var stamina = 0
-	
-	if(_handsFree && _canBite):
-		text = "{user.name} uses {user.his} hands and mouth to try and take off the handcuffs without unlocking them."
-		damage = calcDamage(_pc)
-		stamina = 10
-		
-		if(failChance(_pc, 20)):
-			text += " {user.name} finds {user.himself} drooling a lot."
-			lust = scaleDamage(5)
-	elif(_handsFree):
-		text = "{user.name} can't use {user.his} mouth but {user.he} can just about reach the handcuffs with {user.his} hands. {user.name} is tugging on the restrant, trying to slip it off."
-		damage = calcDamage(_pc, 0.8)
-		stamina = 10
-	elif(_canBite):
-		text = "{user.name} is trying to wiggle the handcuffs off. Not being able to use hands really sucks but using {user.his} mouth instead helps {user.him} to keep them still."
-		damage = calcDamage(_pc, 0.7)
-		stamina = 10
-		
-		if(failChance(_pc, 40)):
-			text += " {user.name} finds {user.himself} drooling a lot."
-			lust = scaleDamage(5)
+func calcRestrainMult(_pc, _minigame):
+	var mult = 1.0
+	if _pc.isBlindfolded():
+		if _pc.hasPerk(Perk.BDSMBlindfold):
+			mult = 0.9
+		mult = 0.7
+
+	if _pc.isBitingBlocked() && _pc.hasBlockedHands():
+		if _pc.hasPerk(Perk.BDSMPerfectStreak):
+			mult *= 0.6
+		else:
+			mult *= 0.3
+	elif _pc.isBitingBlocked() || _pc.hasBlockedHands():
+		if _pc.hasPerk(Perk.BDSMPerfectStreak):
+			mult *= 0.8
+		else:
+			mult *= 0.6
+	return mult
+
+
+func defaultStruggle(_pc, _minigame, response):
+	response = .defaultStruggle(_pc, _minigame, response)
+	if !_pc.hasBlockedHands() && !_pc.isBitingBlocked():
+		response.use.append("mouth")
+		response.text.append("{user.name} uses {user.his} hands and mouth to try and take off the {item.name}.")
+	elif !_pc.hasBlockedHands():
+		response.text.append("{user.name} can't use {user.his} mouth but {user.he} can just about reach the {item.name} with {user.his} hands. {user.name} is tugging on the restrant, trying to slip it off.")
+	elif !_pc.isBitingBlocked():
+		response.use.append("mouth")
+		response.text.append("{user.name} is trying to wiggle the {item.name} off. Not being able to use hands really sucks but using {user.his} mouth instead helps {user.him} to keep them still.")
+	return response
+
+func failStruggle(_pc, _minigame, response):
+	if failChance(_pc, 20):
+		response.text.append("Ow! {user.name} accidently smashed them against "+RNG.pick(["the wall", "the ground", "something"])+".")
+		response.pain += calcStrugglePain(_pc, RNG.randi_range(1, 3))
 	else:
-		text = "{user.name} tries to helplessly wiggle the handcuffs off."
-		damage = calcDamage(_pc, 0.5)
-		stamina = RNG.randi_range(10, 20)
-		
-		if(failChance(_pc, 20)):
-			text += " Ow! {user.name} accidently smashed them against "+RNG.pick(["the wall", "the ground", "something"])
-			pain = scaleDamage(RNG.randi_range(5, 10))
-	
-	return {"text": text, "damage": damage, "lust": lust, "pain": pain, "stamina": stamina}
+		response = .failStruggle(_pc, _minigame, response)
+	return response
+
+func afterStruggle(_pc, _minigame, response):
+	if failChance(_pc, 20) && response.use.has("mouth"):
+		response.text.append("{user.name} finds {user.himself} drooling a lot.")
+		response.lust += calcStruggleLust(_pc, 2)
+	return response

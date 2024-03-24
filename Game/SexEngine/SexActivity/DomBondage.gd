@@ -210,6 +210,8 @@ func processTurn():
 		
 		if(dom.isPlayer()):
 			dom.getInventory().removeItem(item)
+		if item.isRestraint() && item.getRestraintData().canBeLocked() && RNG.chance(33):
+			item.getRestraintData().lockIt()
 		sub.getInventory().forceEquipByStoreOtherUnlessRestraint(item, dom)
 		#sub.getBuffsHolder().calculateBuffs()
 		#sub.updateNonBattleEffects()
