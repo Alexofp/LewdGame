@@ -25,6 +25,8 @@ func _reactInit():
 		GM.pc.getInventory().equipItem(item)
 		GM.pc.updateAppearance()
 		GM.main.updateSubAnims()
+		if item.isRestraint() && item.getRestraintData().canBeLocked() && RNG.chance(50):
+			item.getRestraintData().lockIt()
 	else:
 		setState("blockedhands")
 

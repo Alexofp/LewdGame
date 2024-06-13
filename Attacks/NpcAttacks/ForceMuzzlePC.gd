@@ -19,7 +19,10 @@ func _doAttack(_attacker, _receiver, _context = {}):
 	if(checkDodged(_attacker, _receiver, DamageType.Physical)):
 		return genericDodgeMessage(_attacker, _receiver)
 	
-	_receiver.getInventory().forceEquipByStoreOtherUnlessRestraint(GlobalRegistry.createItem("basketmuzzle"), _attacker)
+	var _item = GlobalRegistry.createItem("basketmuzzle")
+	if _receiver.isPlayer():
+		_item.getRestraintData().lockIt()
+	_receiver.getInventory().forceEquipByStoreOtherUnlessRestraint(_item, _attacker)
 	
 	var text = "{attacker.name} pounces at you and manages to [b]muzzle you[/b]! You shove {attacker.him} back.\n\n[say=attacker]"+RNG.pick([
 		"Much better.",

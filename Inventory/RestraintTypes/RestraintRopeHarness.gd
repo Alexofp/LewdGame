@@ -6,6 +6,9 @@ func _init():
 
 func canUnlockWithKey():
 	return false
+	
+func canBeCut():
+	return true
 
 func doFailingStruggle(_pc, _minigame):
 	return doStruggle(_pc, _minigame)

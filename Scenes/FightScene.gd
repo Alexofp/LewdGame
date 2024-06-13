@@ -381,6 +381,9 @@ func _react(_action: String, _args):
 				enemyCharacter.getInventory().forceEquipByRemoveOther(item, GM.pc)
 				enemyCharacter.getBuffsHolder().calculateBuffs()
 				#enemyCharacter.updateNonBattleEffects()
+
+				if restraintData.canBeLocked() && RNG.chance(33): 
+					restraintData.lockIt()
 				
 				var restraintsAmount = enemyCharacter.getInventory().getEquppedRestraints().size()
 				if(enemyCharacter.shouldReactToRestraint(restraintData.getRestraintType(), restraintsAmount, true)):

@@ -16,6 +16,7 @@ func doStruggle(_pc, _minigame):
 	var pain = 0
 	var damage = 0
 	var stamina = 0
+	var lockDamage = 0.0
 	
 	if(_handsFree && _armsFree):
 		text = "{user.name} tugs on the straps of {user.his} head harness, trying to take it off."
@@ -30,7 +31,10 @@ func doStruggle(_pc, _minigame):
 			text += " Shaking {user.his} head so much makes {user.him} disoriented."
 			pain = scaleDamage(5)
 	
-	return {"text": text, "damage": damage, "lust": lust, "pain": pain, "stamina": stamina}
+	if isLocked():
+		lockDamage = RNG.randf_rangeDis(0, damage / 5) 
+	
+	return {"text": text, "damage": damage, "lockDamage": lockDamage, "lust": lust, "pain": pain, "stamina": stamina}
 
 func getResistAnimation():
 	return "struggle_gag"
