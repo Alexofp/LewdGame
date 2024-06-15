@@ -10,44 +10,41 @@ func canInspectWhileBlindfolded():
 
 func canUnlockWithKey():
 	return false
+
+func canBeCut():
+	return true
 	
 func alwaysSavedWhenStruggledOutOf():
 	return true
 
 func shouldDoStruggleMinigame(_pc):
-	var _armsFree = !_pc.hasBoundArms()
-	if(_armsFree):
+	if(!_pc.hasBoundArms()):
 		return false
 	return .shouldDoStruggleMinigame(_pc)
-	
-func doStruggle(_pc, _minigame):
-	var _handsFree = !_pc.hasBlockedHands()
-	var _armsFree = !_pc.hasBoundArms()
-	var _legsFree = !_pc.hasBoundLegs()
-	var _canSee = !_pc.isBlindfolded()
-	var _canBite = !_pc.isBitingBlocked()
-	
-	var text = "error?"
-	var lust = 0
-	var pain = 0
-	var damage = 0
-	var stamina = 0
-	
-	if(_handsFree && _armsFree):
-		text = "Because {user.name}'s hands are free {user.he} manages to just untie {user.his} blindfold."
-		damage = 1.0
-	elif(_handsFree):
-		text = "{user.name}'s hands are free but they are bound together so {user.name} has to awkwardly bend to reach the blindfold."
-		damage = 1.0
-		stamina = 5
+
+
+func defaultStruggle(_pc, _minigame, response):
+	if !_pc.hasBoundArms() && !_pc.hasBlockedHands():
+		response.text.append("Because {user.name}'s hands are free {user.he} manages to just untie {user.his} {item.name}.")
+		response.damage = 1.0
+		response.stamina = 0
+		response.skipRest()
+	elif !_pc.hasBoundArms():
+		response.text.append("{user.name}'s hands are free but they are bound together so {user.name} has to awkwardly bend to reach {user.his} {item.name}.")
+		response.damage = 1.0
+		response.stamina = calcStruggleStamina(_pc, 0.5)
+		response.skipRest()
 	else:
-		text = "{user.name} shakes {user.his} head, trying to make the blindfold slip off."
-		damage = calcDamage(_pc)
-		stamina = 10
-	
-	#damage = calcDamage()
-	
-	return {"text": text, "damage": damage, "lust": lust, "pain": pain, "stamina": stamina}
+		response.text.append("{user.name} shakes {user.his} head, trying to make the {item.name} slip off.")
+		response.stamina += calcStruggleStamina(_pc, 1)
+	return response
+		
+func fatalFailStruggle(_pc, _minigame, response):
+	response.text.clear()
+	response.text.append("{user.name} shakes {user.his} head, but the {item.name} unfortunately slip back.")
+	response.damage = -1.0
+	response.stamina += calcStruggleStamina(_pc, 1)
+	return response
 
 func getResistAnimation():
 	return "struggle_gag"

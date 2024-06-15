@@ -394,11 +394,12 @@ func setRestraintLevel(newlevel):
 	if(restraintData != null):
 		restraintData.setLevel(newlevel)
 
-func calculateBestRestraintLevel():
-	#if(GM.pc != null):
-	#	return GM.pc.calculateBestRestraintLevel()
-	#else:
-	return RNG.randi_range(1, 5)
+func calculateBestRestraintLevel(_min = 1):
+	var cLevel = 5 
+	if GM.pc != null:
+		cLevel = 2 + pow(GM.pc.getLevel(), 0.8)
+	cLevel = max(cLevel, _min)
+	return int(RNG.randf_rangeDis(_min, cLevel))
 
 func canForceOntoNpc():
 	return isRestraint()

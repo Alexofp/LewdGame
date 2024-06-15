@@ -9,6 +9,8 @@ enum {
 	Harness,
 	WristCuffs,
 	AnkleCuffs,
+	WristCuffsZip,
+	AnkleCuffsZip,
 	Mittens,
 	Straitjacket,
 	ButtPlug,

@@ -205,6 +205,11 @@ static func numberToPercentString(value: float):
 		return "+"+str(value*100)+"%"
 	return "0%"
 
+static func limitedPercent(value: float):
+	if value > 1:
+		value = 1
+	return str(roundF(value*100.0, 1))
+
 # https://godotengine.org/qa/19077/how-to-get-the-date-as-per-rfc-1123-date-format-in-game
 static func datetimeToRFC113(time):
 	var nameweekday= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]

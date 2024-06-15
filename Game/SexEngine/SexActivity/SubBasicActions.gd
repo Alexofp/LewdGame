@@ -114,7 +114,7 @@ func startActivity(_args):
 		for item in getSub().getInventory().getEquppedRestraints():
 			var restraintData: RestraintData = item.getRestraintData()
 			
-			if(restraintData == null || !restraintData.canStruggle()):
+			if(restraintData == null || !restraintData.canStruggle() || restraintData.isLocked()):
 				continue
 			
 			if(!restraintData.shouldDoStruggleMinigame(sub)):
@@ -137,7 +137,7 @@ func startActivity(_args):
 		
 		var text = ""
 		var restraintData: RestraintData = pickedItem.getRestraintData()
-		var struggleData = restraintData.doStruggle(sub, minigameStatus)
+		var struggleData = restraintData.doStruggle(sub, minigameStatus).build()
 		
 		var struggleText = GM.ui.processString(struggleData["text"], {"user":subID})
 		text += struggleText

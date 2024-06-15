@@ -884,6 +884,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Inventory/RestraintTypes/RestraintHandCuffs.gd"
 }, {
+"base": "RestraintHandCuffs",
+"class": "RestraintHandCuffsZip",
+"language": "GDScript",
+"path": "res://Inventory/RestraintTypes/RestraintHandCuffspZip.gd"
+}, {
 "base": "RestraintData",
 "class": "RestraintHypnovisor",
 "language": "GDScript",
@@ -893,6 +898,11 @@ _global_script_classes=[ {
 "class": "RestraintLegCuffs",
 "language": "GDScript",
 "path": "res://Inventory/RestraintTypes/RestraintLegCuffs.gd"
+}, {
+"base": "RestraintLegCuffs",
+"class": "RestraintLegCuffsZip",
+"language": "GDScript",
+"path": "res://Inventory/RestraintTypes/RestraintLegCuffspZip.gd"
 }, {
 "base": "RestraintData",
 "class": "RestraintMittens",
@@ -1405,8 +1415,10 @@ _global_script_class_icons={
 "RestraintChastityCage": "",
 "RestraintData": "",
 "RestraintHandCuffs": "",
+"RestraintHandCuffsZip": "",
 "RestraintHypnovisor": "",
 "RestraintLegCuffs": "",
+"RestraintLegCuffsZip": "",
 "RestraintMittens": "",
 "RestraintMuzzle": "",
 "RestraintRingGag": "",

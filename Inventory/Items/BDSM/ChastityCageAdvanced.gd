@@ -41,7 +41,8 @@ func isRestraint():
 
 func generateRestraintData():
 	restraintData = preload("res://Inventory/RestraintTypes/RestraintChastityCageAdvanced.gd").new()
-	restraintData.setLevel(6)
+	restraintData.setLevel(calculateBestRestraintLevel(3))
+	restraintData.lockIt()
 
 func getForcedOnMessage(isPlayer = true):
 	if(isPlayer):

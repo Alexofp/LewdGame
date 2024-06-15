@@ -51,7 +51,7 @@ func isRestraint():
 
 func generateRestraintData():
 	restraintData = RestraintHypnovisor.new()
-	restraintData.setLevel(5)
+	restraintData.setLevel(calculateBestRestraintLevel())
 	
 func getForcedOnMessage(isPlayer = true):
 	if(isPlayer):

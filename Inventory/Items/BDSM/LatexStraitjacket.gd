@@ -34,7 +34,7 @@ func coversBodyparts():
 
 func generateRestraintData():
 	restraintData = RestraintStraitjacket.new()
-	restraintData.setLevel(5)
+	restraintData.setLevel(calculateBestRestraintLevel(3))
 
 func getRiggedParts(_character):
 	return {

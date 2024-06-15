@@ -8,7 +8,7 @@ func getVisibleName():
 	return "Perfect streak"
 
 func getVisibleDescription():
-	return "Time to say RED to your restraints, you can continue the struggling minigame as long as you keep hitting the red zone perfectly. Each perfect hit makes your struggling 25% more efficient."
+	return "You learned how to find weak points of restraints, your struggling is more efficient."
 
 func getSkillTier():
 	return 1

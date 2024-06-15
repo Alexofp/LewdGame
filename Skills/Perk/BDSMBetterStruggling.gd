@@ -8,7 +8,7 @@ func getVisibleName():
 	return "Damsel of Success"
 
 func getVisibleDescription():
-	return "You learned how to shake restraints off in the most efficient ways, if you complete the struggling minigame perfectly your struggling is twice as effective"
+	return "You learned how to shake restraints off in the most efficient ways, your struggling consume less stamina"
 
 func getSkillTier():
 	return 1
