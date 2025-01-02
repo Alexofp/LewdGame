@@ -28,6 +28,8 @@ script = ExtResource( 2 )
 
 [node name="DynamicCharacters" type="Node" parent="."]
 
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
 [connection signal="onDevComButton" from="GameUI" to="." method="_on_GameUI_onDevComButton"]
 [connection signal="on_option_button" from="GameUI" to="." method="_on_GameUI_on_option_button"]
 [connection signal="on_rollback_button" from="GameUI" to="." method="_on_GameUI_on_rollback_button"]

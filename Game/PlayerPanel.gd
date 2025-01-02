@@ -36,6 +36,19 @@ func loadingSavefileFinished():
 
 func on_player_statchange():
 	updateUI()
+	callStatsWebhook()
+
+func callStatsWebhook():
+	var jsonStr = ""
+	if(OPTIONS.getWebhookStatsEnabled()):
+		#$HTTPRequest.request(OPTIONS.getWebhookURL)
+		jsonStr= '{"action": "stats","p": ' + str(GM.pc.getPain()) + ',"pt": ' + str(GM.pc.painThreshold())
+		jsonStr= jsonStr + ',"l": ' + str(GM.pc.getLust()) + ' ,"lt": ' + str(GM.pc.lustThreshold())
+		jsonStr= jsonStr + ',"s": ' + str(GM.pc.getStamina()) + ' ,"ms": ' + str(GM.pc.getMaxStamina())
+		jsonStr= jsonStr + ',"lp": ' + str(int(GM.pc.getSkillsHolder().getLevelProgress()*100)) + ' ,"lvl": ' + str(GM.pc.getSkillsHolder().getLevel())
+		jsonStr= jsonStr + ',"ar": ' + str(int(GM.pc.getArousal()*100)) + ' ,"ll": ' + str(int(GM.pc.getLustLevel()*100)) + '}'
+		$HTTPRequest.request(OPTIONS.getWebhookURL(), ["Content-Type: application/json"], true, HTTPClient.METHOD_POST , jsonStr)
+
 
 func updateUI():
 	nameLabel.text = GM.pc.getName() + ", " + GM.pc.getSpeciesFullName()

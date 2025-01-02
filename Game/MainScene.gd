@@ -965,6 +965,13 @@ func _on_Player_holePinafullyStretched(bodypart, _who):
 		addMessage("OW! Your pussy [b]hurts[/b]..")
 	if(bodypart == BodypartSlot.Anus):
 		addMessage("OW! Your anus [b]hurts[/b]..")
+	callPainWebhook(bodypart)
+
+func callPainWebhook(bodypart):
+	var jsonStr = ""
+	if(OPTIONS.getWebhookPainEnabled()):
+		jsonStr= '{"action": "painstretch","bodypart": "' + str(bodypart) + '"}'
+		$HTTPRequest.request(OPTIONS.getWebhookURL(), ["Content-Type: application/json"], true, HTTPClient.METHOD_POST , jsonStr)
 
 func _on_Player_gotWoundedBy(_who):
 	addMessage("OW! That [b]really[/b] hurt..")
