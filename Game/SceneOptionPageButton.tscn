@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://addons/controller_icons/objects/TextureRect.gd" type="Script" id=1]
+[ext_resource path="res://addons/controller_icons/assets/key/v.png" type="Texture" id=2]
+[ext_resource path="res://Game/SceneOptionPageButton.gd" type="Script" id=3]
+
+[sub_resource type="InputEventAction" id=29]
+action = "gameui_nextpage"
+
+[sub_resource type="ShortCut" id=28]
+shortcut = SubResource( 29 )
+
+[node name="PageButton" type="Button"]
+margin_right = 23.0
+margin_bottom = 86.0
+shortcut_in_tooltip = false
+shortcut = SubResource( 28 )
+text = ">"
+icon_align = 1
+expand_icon = true
+script = ExtResource( 3 )
+
+[node name="Icon" type="TextureRect" parent="."]
+anchor_right = 1.0
+rect_min_size = Vector2( 23, 23 )
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 5
+script = ExtResource( 1 )
+path = "gameui_nextpage"
+max_width = 23

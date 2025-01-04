@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Game/SceneOptionButton.gd" type="Script" id=1]
+[ext_resource path="res://addons/controller_icons/assets/key/1.png" type="Texture" id=2]
 
 [node name="SceneOptionButton" type="Button"]
 margin_right = 157.0
@@ -8,16 +9,11 @@ margin_bottom = 26.0
 size_flags_horizontal = 3
 shortcut_in_tooltip = false
 text = "Meow"
+icon = ExtResource( 2 )
 clip_text = true
+expand_icon = true
 script = ExtResource( 1 )
-
-[node name="KeyLabel" type="Label" parent="."]
-self_modulate = Color( 1, 1, 1, 0.317647 )
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_right = 8.0
-text = "1"
-valign = 1
+path = "ingame_option_a0"
 
 [connection signal="focus_exited" from="." to="." method="_on_SceneOptionButton_focus_exited"]
 [connection signal="mouse_exited" from="." to="." method="_on_SceneOptionButton_mouse_exited"]

@@ -27,19 +27,19 @@ func _ready():
 			GlobalTheme.rename_stylebox("scrollTouch", "scroll", "VScrollBar")
 			
 	var rawModList = GlobalRegistry.getRawModList()
-	if(GlobalRegistry.hasModSupport() && OS.get_name() == "Android" && (rawModList.size() > 0) || OPTIONS.shouldShowModdedLauncher()):
+	if(GlobalRegistry.hasModSupport() && OS.get_name() in ["Android", "Switch"] && (rawModList.size() > 0) || OPTIONS.shouldShowModdedLauncher()):
 		if(Util.readFile(pckversionPath) != GlobalRegistry.getGameVersionString()):
 			generateBDCCpckFile()
 			rawModList = GlobalRegistry.getRawModList()
 			
 	var SHOW_THIS_SCREEN_ANYWAY = false # DON'T FORGET TO CHANGE TO false BEFORE SHIPPING
 	
-	if(OS.get_name() == "Android" || SHOW_THIS_SCREEN_ANYWAY):
+	if(OS.get_name() in ["Android", "Switch"] || SHOW_THIS_SCREEN_ANYWAY):
 		$VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/TestButton.visible = true
 	else:
 		$VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/TestButton.visible = false
 	
-	if(OS.get_name() in ["Android", "HTML5"]):
+	if(OS.get_name() in ["Android", "HTML5", "Switch"]):
 		$VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/OpenModsFolder.visible = false
 	
 	if(!SHOW_THIS_SCREEN_ANYWAY && !OPTIONS.shouldShowModdedLauncher()):
@@ -168,7 +168,7 @@ func onModEntryClicked(entry):
 
 func updateSelectedEntry():
 	if(selectedEntry == null):
-		if(OS.get_name() == "Android" && false):
+		if(OS.get_name() in ["Android", "Switch"] && false):
 			if(!foundBDCC):
 				$VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/VBoxContainer/WarningLabel.bbcode_text = "[color=red]You must provide BDCC.pck file to be able to use mods. It must be from the current version! Download the most recent one [url=https://github.com/Alexofp/BDCC/releases]HERE[/url] and place into the mods folder[/color]"
 				$VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/VBoxContainer/WarningLabel.visible = true
@@ -206,7 +206,7 @@ func tryToPopulateFilesList():
 		return ""
 	var zipToLoad = selectedEntry["path"]
 	if(zipToLoad.get_file() == "BDCC.pck"):
-		return "This file is required for mods to function on Android version. On other platforms this file is Not required and will be disabled automatically"
+		return "This file is required for mods to function on mobile versions. On other platforms this file is Not required and will be disabled automatically"
 	
 	var gdunzip = GDUnzip.new()
 	
@@ -292,7 +292,7 @@ func ensureBDCCIsFirst():
 	for _i in range(currentModOrder.size()):
 		if(currentModOrder[_i]["name"] == "BDCC.pck"):
 			var entry = currentModOrder[_i]
-			if(OS.get_name() != "Android"):
+			if(not OS.get_name() in ["Android", "Swotch"]):
 				entry["disabled"] = true
 			else:
 				entry["disabled"] = false

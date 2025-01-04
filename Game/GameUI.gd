@@ -4,10 +4,10 @@ class_name GameUI
 signal on_option_button(method, args)
 signal on_rollback_button
 signal onDevComButton
-var buttons: Array = []
 var buttonsCountPerPage: int = 15
 var optionButtonScene: PackedScene = preload("res://Game/SceneOptionButton.tscn")
 onready var optionButtonsContainer = $HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer
+onready var buttons: Array = optionButtonsContainer.get_children()
 var currentPage = 0
 var options: Dictionary = {}
 var optionsCurrentID = 0
@@ -66,22 +66,6 @@ func _ready():
 	gameParser = GameParser.new()
 	sayParser = SayParser.new()
 	
-	var shortCutKeys = [
-		49, 50, 51, 52, 53,
-		81, 87, 69, 82, 84,
-		65, 83, 68, 70, 71,
-		#90, 88, 67, 86, 66,
-	]
-	var _i = 0
-	for n in buttonsCountPerPage:
-		var newbutton = optionButtonScene.instance()
-		buttons.append(newbutton)
-		optionButtonsContainer.add_child(newbutton)
-		
-		if(_i < shortCutKeys.size()):
-			newbutton.setShortcutPhysicalScancode(shortCutKeys[_i])
-		_i += 1
-		
 	if(!OPTIONS.isRollbackEnabled()):
 		rollbackButton.visible = false
 		

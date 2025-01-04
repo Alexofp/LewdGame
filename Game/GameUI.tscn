@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=88 format=2]
 
 [ext_resource path="res://GlobalTheme.tres" type="Theme" id=1]
 [ext_resource path="res://Game/TooltipDisplay.tscn" type="PackedScene" id=2]
@@ -24,6 +24,27 @@
 [ext_resource path="res://UI/HornyMessageUI/HornyMessage.tscn" type="PackedScene" id=22]
 [ext_resource path="res://Images/UI/expandHover.png" type="Texture" id=23]
 [ext_resource path="res://Images/UI/expand.png" type="Texture" id=24]
+[ext_resource path="res://Game/SceneOptionButton.tscn" type="PackedScene" id=25]
+[ext_resource path="res://addons/controller_icons/assets/key/f9.png" type="Texture" id=26]
+[ext_resource path="res://addons/controller_icons/assets/key/2.png" type="Texture" id=27]
+[ext_resource path="res://addons/controller_icons/assets/key/5.png" type="Texture" id=28]
+[ext_resource path="res://addons/controller_icons/assets/key/q.png" type="Texture" id=29]
+[ext_resource path="res://addons/controller_icons/assets/key/e.png" type="Texture" id=30]
+[ext_resource path="res://addons/controller_icons/assets/key/a.png" type="Texture" id=31]
+[ext_resource path="res://addons/controller_icons/assets/key/d.png" type="Texture" id=32]
+[ext_resource path="res://addons/controller_icons/assets/key/c.png" type="Texture" id=33]
+[ext_resource path="res://addons/controller_icons/assets/key/f.png" type="Texture" id=34]
+[ext_resource path="res://addons/controller_icons/assets/key/g.png" type="Texture" id=35]
+[ext_resource path="res://addons/controller_icons/assets/key/3.png" type="Texture" id=36]
+[ext_resource path="res://addons/controller_icons/assets/key/4.png" type="Texture" id=37]
+[ext_resource path="res://addons/controller_icons/assets/key/w.png" type="Texture" id=38]
+[ext_resource path="res://addons/controller_icons/assets/key/f5.png" type="Texture" id=39]
+[ext_resource path="res://Game/SceneOptionPageButton.tscn" type="PackedScene" id=40]
+[ext_resource path="res://addons/controller_icons/objects/Button.gd" type="Script" id=41]
+[ext_resource path="res://addons/controller_icons/assets/key/r.png" type="Texture" id=42]
+[ext_resource path="res://addons/controller_icons/assets/key/x.png" type="Texture" id=43]
+[ext_resource path="res://addons/controller_icons/assets/key/t.png" type="Texture" id=44]
+[ext_resource path="res://addons/controller_icons/assets/key/s.png" type="Texture" id=45]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.207843, 0.133333, 0.364706, 1 )
@@ -54,17 +75,101 @@ action = "gameui_menu"
 [sub_resource type="ShortCut" id=8]
 shortcut = SubResource( 24 )
 
-[sub_resource type="InputEventAction" id=25]
+[sub_resource type="InputEventAction" id=60]
 action = "gameui_prevpage"
 
-[sub_resource type="ShortCut" id=26]
-shortcut = SubResource( 25 )
+[sub_resource type="ShortCut" id=61]
+shortcut = SubResource( 60 )
 
-[sub_resource type="InputEventAction" id=27]
-action = "gameui_nextpage"
+[sub_resource type="InputEventAction" id=33]
+action = "ingame_option_a0"
 
-[sub_resource type="ShortCut" id=28]
-shortcut = SubResource( 27 )
+[sub_resource type="ShortCut" id=34]
+shortcut = SubResource( 33 )
+
+[sub_resource type="InputEventAction" id=31]
+action = "ingame_option_a1"
+
+[sub_resource type="ShortCut" id=32]
+shortcut = SubResource( 31 )
+
+[sub_resource type="InputEventAction" id=35]
+action = "ingame_option_a2"
+
+[sub_resource type="ShortCut" id=30]
+shortcut = SubResource( 35 )
+
+[sub_resource type="InputEventAction" id=36]
+action = "ingame_option_a3"
+
+[sub_resource type="ShortCut" id=37]
+shortcut = SubResource( 36 )
+
+[sub_resource type="InputEventAction" id=38]
+action = "ingame_option_a4"
+
+[sub_resource type="ShortCut" id=39]
+shortcut = SubResource( 38 )
+
+[sub_resource type="InputEventAction" id=40]
+action = "ingame_option_b0"
+
+[sub_resource type="ShortCut" id=41]
+shortcut = SubResource( 40 )
+
+[sub_resource type="InputEventAction" id=42]
+action = "ingame_option_b1"
+
+[sub_resource type="ShortCut" id=43]
+shortcut = SubResource( 42 )
+
+[sub_resource type="InputEventAction" id=44]
+action = "ingame_option_b2"
+
+[sub_resource type="ShortCut" id=45]
+shortcut = SubResource( 44 )
+
+[sub_resource type="InputEventAction" id=46]
+action = "ingame_option_b3"
+
+[sub_resource type="ShortCut" id=47]
+shortcut = SubResource( 46 )
+
+[sub_resource type="InputEventAction" id=48]
+action = "ingame_option_b4"
+
+[sub_resource type="ShortCut" id=49]
+shortcut = SubResource( 48 )
+
+[sub_resource type="InputEventAction" id=50]
+action = "ingame_option_c0"
+
+[sub_resource type="ShortCut" id=51]
+shortcut = SubResource( 50 )
+
+[sub_resource type="InputEventAction" id=52]
+action = "ingame_option_c1"
+
+[sub_resource type="ShortCut" id=53]
+shortcut = SubResource( 52 )
+
+[sub_resource type="InputEventAction" id=54]
+action = "ingame_option_c2"
+
+[sub_resource type="ShortCut" id=55]
+shortcut = SubResource( 54 )
+
+[sub_resource type="InputEventAction" id=56]
+action = "ingame_option_c3"
+
+[sub_resource type="ShortCut" id=57]
+shortcut = SubResource( 56 )
+
+[sub_resource type="InputEventAction" id=58]
+action = "ingame_option_c4"
+
+[sub_resource type="ShortCut" id=59]
+shortcut = SubResource( 58 )
 
 [sub_resource type="StyleBoxFlat" id=6]
 bg_color = Color( 0.207843, 0.133333, 0.364706, 1 )
@@ -153,6 +258,10 @@ size_flags_horizontal = 3
 shortcut_in_tooltip = false
 shortcut = SubResource( 16 )
 text = "Q.save"
+icon = ExtResource( 39 )
+expand_icon = true
+script = ExtResource( 41 )
+path = "gameui_quicksave"
 
 [node name="LoadButton" type="Button" parent="HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer2"]
 margin_left = 120.0
@@ -163,6 +272,10 @@ size_flags_horizontal = 3
 shortcut_in_tooltip = false
 shortcut = SubResource( 18 )
 text = "Q.load"
+icon = ExtResource( 26 )
+expand_icon = true
+script = ExtResource( 41 )
+path = "gameui_quickload"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 margin_top = 640.0
@@ -180,6 +293,10 @@ size_flags_horizontal = 3
 shortcut_in_tooltip = false
 shortcut = SubResource( 10 )
 text = "Skills"
+icon = ExtResource( 43 )
+expand_icon = true
+script = ExtResource( 41 )
+path = "gameui_skills"
 
 [node name="MenuButton" type="Button" parent="HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer3"]
 margin_left = 99.0
@@ -190,6 +307,10 @@ size_flags_horizontal = 3
 shortcut_in_tooltip = false
 shortcut = SubResource( 8 )
 text = "Menu"
+icon = ExtResource( 33 )
+expand_icon = true
+script = ExtResource( 41 )
+path = "gameui_menu"
 
 [node name="DebugMenu" type="Button" parent="HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer3"]
 margin_left = 199.0
@@ -198,6 +319,7 @@ margin_bottom = 26.0
 hint_tooltip = "Open the debug/cheats menu"
 shortcut_in_tooltip = false
 text = "DG"
+script = ExtResource( 41 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 margin_top = 670.0
@@ -211,6 +333,7 @@ hint_tooltip = "Rollback the game's state back"
 size_flags_horizontal = 3
 shortcut_in_tooltip = false
 text = "Rollback"
+script = ExtResource( 41 )
 
 [node name="HSplitContainer" type="HSplitContainer" parent="HBoxContainer"]
 margin_left = 264.0
@@ -253,14 +376,14 @@ text = "Translate"
 [node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer2"]
 margin_top = 34.0
 margin_right = 710.0
-margin_bottom = 678.0
+margin_bottom = 618.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 14 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer2/ScrollContainer"]
 margin_right = 710.0
-margin_bottom = 644.0
+margin_bottom = 584.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -304,32 +427,148 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer2"]
-margin_top = 682.0
+margin_top = 622.0
 margin_right = 710.0
 margin_bottom = 708.0
 
-[node name="PrevPageButton" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
-margin_right = 23.0
-margin_bottom = 26.0
-shortcut_in_tooltip = false
-shortcut = SubResource( 26 )
+[node name="PrevPageButton" parent="HBoxContainer/VBoxContainer2/HBoxContainer" instance=ExtResource( 40 )]
+shortcut = SubResource( 61 )
 text = "<"
 
 [node name="GridContainer" type="GridContainer" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
 margin_left = 27.0
 margin_right = 683.0
-margin_bottom = 26.0
+margin_bottom = 86.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 5
+__meta__ = {
+"_edit_lock_": true
+}
 
-[node name="NextPageButton" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="SceneOptionButtonA0" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_right = 128.0
+shortcut = SubResource( 34 )
+
+[node name="SceneOptionButtonA1" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 132.0
+margin_right = 260.0
+shortcut = SubResource( 32 )
+icon = ExtResource( 27 )
+path = "ingame_option_a1"
+
+[node name="SceneOptionButtonA2" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 264.0
+margin_right = 392.0
+shortcut = SubResource( 30 )
+icon = ExtResource( 36 )
+path = "ingame_option_a2"
+
+[node name="SceneOptionButtonA3" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 396.0
+margin_right = 524.0
+shortcut = SubResource( 37 )
+icon = ExtResource( 37 )
+path = "ingame_option_a3"
+
+[node name="SceneOptionButtonA4" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 528.0
+margin_right = 656.0
+shortcut = SubResource( 39 )
+icon = ExtResource( 28 )
+path = "ingame_option_a4"
+
+[node name="SceneOptionButtonB0" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_top = 30.0
+margin_right = 128.0
+margin_bottom = 56.0
+shortcut = SubResource( 41 )
+icon = ExtResource( 29 )
+path = "ingame_option_b0"
+
+[node name="SceneOptionButtonB1" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 132.0
+margin_top = 30.0
+margin_right = 260.0
+margin_bottom = 56.0
+shortcut = SubResource( 43 )
+icon = ExtResource( 38 )
+path = "ingame_option_b1"
+
+[node name="SceneOptionButtonB2" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 264.0
+margin_top = 30.0
+margin_right = 392.0
+margin_bottom = 56.0
+shortcut = SubResource( 45 )
+icon = ExtResource( 30 )
+path = "ingame_option_b2"
+
+[node name="SceneOptionButtonB3" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 396.0
+margin_top = 30.0
+margin_right = 524.0
+margin_bottom = 56.0
+shortcut = SubResource( 47 )
+icon = ExtResource( 42 )
+path = "ingame_option_b3"
+
+[node name="SceneOptionButtonB4" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 528.0
+margin_top = 30.0
+margin_right = 656.0
+margin_bottom = 56.0
+shortcut = SubResource( 49 )
+icon = ExtResource( 44 )
+path = "ingame_option_b4"
+
+[node name="SceneOptionButtonC0" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_top = 60.0
+margin_right = 128.0
+margin_bottom = 86.0
+shortcut = SubResource( 51 )
+icon = ExtResource( 31 )
+path = "ingame_option_c0"
+
+[node name="SceneOptionButtonC1" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 132.0
+margin_top = 60.0
+margin_right = 260.0
+margin_bottom = 86.0
+shortcut = SubResource( 53 )
+icon = ExtResource( 45 )
+path = "ingame_option_c1"
+
+[node name="SceneOptionButtonC2" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 264.0
+margin_top = 60.0
+margin_right = 392.0
+margin_bottom = 86.0
+shortcut = SubResource( 55 )
+icon = ExtResource( 32 )
+path = "ingame_option_c2"
+
+[node name="SceneOptionButtonC3" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 396.0
+margin_top = 60.0
+margin_right = 524.0
+margin_bottom = 86.0
+shortcut = SubResource( 57 )
+icon = ExtResource( 34 )
+path = "ingame_option_c3"
+
+[node name="SceneOptionButtonC4" parent="HBoxContainer/VBoxContainer2/HBoxContainer/GridContainer" instance=ExtResource( 25 )]
+margin_left = 528.0
+margin_top = 60.0
+margin_right = 656.0
+margin_bottom = 86.0
+shortcut = SubResource( 59 )
+icon = ExtResource( 35 )
+path = "ingame_option_c4"
+
+[node name="NextPageButton" parent="HBoxContainer/VBoxContainer2/HBoxContainer" instance=ExtResource( 40 )]
 margin_left = 687.0
 margin_right = 710.0
-margin_bottom = 26.0
-shortcut_in_tooltip = false
-shortcut = SubResource( 28 )
-text = ">"
 
 [node name="Control" type="Control" parent="HBoxContainer/VBoxContainer2"]
 margin_top = 712.0

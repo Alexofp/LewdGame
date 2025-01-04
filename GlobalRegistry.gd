@@ -157,7 +157,6 @@ func checkModSupport():
 		var _haveBase = ProjectSettings.load_resource_pack("res://BDCC.pck")
 		if(!_haveBase):
 			modsSupport = false
-			return
 	else:
 		modsSupport = true
 
