@@ -24,6 +24,24 @@ static func randf_range(from: float, to: float) -> float:
 static func randf_rangeX2(from: float, to: float) -> float:
 	return (rand_range(from, to) + rand_range(from, to)) / 2.0
 
+# generates a number in the range with higher chance in the upper half
+static func randf_rangeAdv(from: float, to: float) -> float:
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	var a = rng.randf_range(from, to)
+	var b = rng.randf_range(from, to)
+	var c = rng.randf_range(from, to)
+	return (a + b + c - min(min(a, b), c)) / 2.0
+
+# generates a number in the range with higher chance in the lower half
+static func randf_rangeDis(from: float, to: float) -> float:
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	var a = rng.randf_range(from, to)
+	var b = rng.randf_range(from, to)
+	var c = rng.randf_range(from, to)
+	return (a + b + c - max(max(a, b), c)) / 2.0
+
 # chance(100) will always be true
 # chance(3) will be true 3% of the time
 static func chance(ch: float) -> bool:
