@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Game/Minigames/TestGame/TestGame.gd" type="Script" id=1]
+
+[node name="Node2D" type="Control"]
+script = ExtResource( 1 )
+
+[node name="Label -TEST" type="Label" parent="."]
+margin_left = 96.0
+margin_top = 72.0
+margin_right = 408.0
+margin_bottom = 86.0
+text = "Dummy minigame for testing and development"
+
+[node name="Button-win" type="Button" parent="."]
+margin_left = 144.0
+margin_top = 128.0
+margin_right = 187.0
+margin_bottom = 148.0
+text = "WIN"
+
+[node name="Button-lose" type="Button" parent="."]
+margin_left = 216.0
+margin_top = 128.0
+margin_right = 260.0
+margin_bottom = 148.0
+text = "LOSE"
+
+[node name="Button-fatal" type="Button" parent="."]
+margin_left = 288.0
+margin_top = 128.0
+margin_right = 300.0
+margin_bottom = 148.0
+text = "FATAL"
+
+[node name="Button-custom" type="Button" parent="."]
+margin_left = 144.0
+margin_top = 168.0
+margin_right = 244.0
+margin_bottom = 188.0
+text = "Custom score"
+
+[node name="LineEdit-result" type="LineEdit" parent="."]
+margin_left = 280.0
+margin_top = 168.0
+margin_right = 341.0
+margin_bottom = 192.0
+
+[node name="MenuButton-options" type="MenuButton" parent="."]
+margin_left = 144.0
+margin_top = 216.0
+margin_right = 341.0
+margin_bottom = 236.0
+text = "options"
+
+[connection signal="pressed" from="Button-win" to="." method="_on_Buttonwin_pressed"]
+[connection signal="pressed" from="Button-lose" to="." method="_on_Buttonlose_pressed"]
+[connection signal="pressed" from="Button-fatal" to="." method="_on_Buttonfatal_pressed"]
+[connection signal="pressed" from="Button-custom" to="." method="_on_Buttoncustom_pressed"]
